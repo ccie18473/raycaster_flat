@@ -12,12 +12,11 @@ impl Canvas {
         Canvas { width, height }
     }
     pub fn draw(&mut self, ctx: &mut Context, player: &mut Player, map: &mut Map) -> GameResult {
-        // step by to make it quicker
-        for x in (0..self.width).step_by(8) {
+        let mut mesh_builder = ggez::graphics::MeshBuilder::new();
+        for x in 0..self.width {
             let ray = crate::Ray::new(player, map, x, self.width, self.height);
 
-            let mesh = ggez::graphics::Mesh::new_line(
-                ctx,
+            mesh_builder.line(
                 &[
                     Point2::new(x as f32, ray.draw_start as f32),
                     Point2::new(x as f32, ray.draw_end as f32),
@@ -25,9 +24,12 @@ impl Canvas {
                 1.0,
                 ray.color,
             )?;
-
-            ggez::graphics::draw(ctx, &mesh, ggez::graphics::DrawParam::default())?;
         }
+
+        let mesh = mesh_builder.build(ctx)?;
+
+        ggez::graphics::draw(ctx, &mesh, ggez::graphics::DrawParam::default())?;
+
         Ok(())
     }
     pub fn draw_fps(&mut self, ctx: &mut Context) -> GameResult {

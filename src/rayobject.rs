@@ -122,7 +122,12 @@ impl Ray {
         }
         //give x and y sides different brightness
         if side == 1 {
-            color = Color::CYAN;
+            color = Color {
+                r: color.r / 2.0,
+                g: color.g / 2.0,
+                b: color.b / 2.0,
+                a: 1.0,
+            };
         }
         //draw the pixels of the stripe as a vertical line
         Ray {
